@@ -1,0 +1,20 @@
+PASCAL VOC DATASET PARSING
+
+The PASCAL VOC dataset consists of thousands of images with PRE-LABELED bounding boxes that have been manually entered and checked by human volunteers. This is a very rich dataset but it is inconsistent in that:
+	1. Bounding boxes were drawn manually so their sizes are not consistsent
+	2. Some images have several bounding boxes while some have only one
+	3. Some images contain more than one instance of the same class
+
+This kind of inconsistency is a massive obstacle when it comes to using these labeled images for training deep neural networks. These networks require a standard dataset with constant image size (convolutional layers can only work on consistent XY pixel count) and require each instance presented to the network during training to be a stand-alone instance. There is thus a need for a way to quickly and easily extract all these labeled bounding boxes from the original image, resize, and then use for training. 
+
+This is actually very challenging given the nature of the dataset: in PASCAL-VOC, the images exist in an entirely separate folder from the bounding box and label information. Each .jpeg image has its own ID which has a corresponding .xml file that contains information regarding the bounding box (top left and bottom right corner XY coordinates and the class label).
+
+This Pascal_voc_parse script runs a fully automated algorithm that:
+	1. Accesses the main directory with all images
+	2. Reads image file name and identifies corresponding .xml file name
+	3. Parses through .xml file for required tags (bounding box coordinates and cass label)
+	4. Crops out the image within the bounding box
+	5. Resizes the image
+	6. Pastes output to separate folder with each folder matching the class label
+	
+The following Pascal_voc_binary script goes a step further by convering all image matrices into a 1 dimensional vector (also known as "flattening" the image) and stores a list of all flattened image in a single csv file which can then be used for any ANN (even ones that do not start with a convolutional layer (Fully connected/Dense Layers in an MLP for example)
